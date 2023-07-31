@@ -1,5 +1,5 @@
-**
-!**/*.c
-!.gitignore
-
+*
+!*/
+!*.c
 temp*
+!.gitignore
