@@ -65,6 +65,25 @@ void printList(Node* start) {
     printf("\n");
 }
 
+void pushFront(Node** start, Node* new) {
+    new->next = *start;
+    *start = new;
+}
+
+Node* findEnd(Node* start) {
+    Node* node = start;
+    while (node->next != 0) {
+        node = node->next;
+    }
+    return node;
+}
+
+void pushBack(Node** end, Node* new) {
+    new->next = 0;
+    (*end)->next = new;
+    *end = new;
+}
+
 int main() {
     Node a = {{0, 1}, NULL};
     Node b = {{1, 2}, NULL};
@@ -74,6 +93,8 @@ int main() {
     Node f = {{8, 9}, NULL};
 
     Node* start = &a;
+    Node* end = &f;  // end pointer
+
     a.next = &b;
     b.next = &c;
     c.next = &d;
@@ -84,15 +105,11 @@ int main() {
 
     printList(start);
 
-    Node* search = searchList(start, 9, 8);
+    Node g = {{9, 9}, NULL};
+    pushBack(&end, &g);
 
-    if (search) {
-        printNode(search);
-    }
-
-    printf("%i\n", indexOf(start, 9, 8));
-
-    printf("The linked list is size %i\n", size(start));
+    printList(start);
+    printNode(end);
 
     return 0;
 }
