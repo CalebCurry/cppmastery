@@ -95,6 +95,8 @@ void insertNode(Node** start, Node** end, Node* new, int index) {
         new->next = found->next;
         found->next = new;
 
+        // also need to check for valid index
+
         if (found->next->next == 0) {
             *end = new;
         }
