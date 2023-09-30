@@ -16,6 +16,9 @@ Node* getNode(Node* start, int index) {
     Node* node = start;
     for (int i = 0; i < index; i++) {
         node = node->next;
+        if (node == 0) {
+            return NULL;
+        }
     }
     return node;
 }
@@ -84,32 +87,62 @@ void pushBack(Node** end, Node* new) {
     *end = new;
 }
 
+void insertNode(Node** start, Node** end, Node* new, int index) {
+    if (index == 0) {
+        pushFront(start, new);
+    } else {
+        Node* found = getNode(*start, index - 1);
+        new->next = found->next;
+        found->next = new;
+
+        if (found->next->next == 0) {
+            *end = new;
+        }
+    }
+}
+
 int main() {
     Node a = {{0, 1}, NULL};
-    Node b = {{1, 2}, NULL};
-    Node c = {{2, 3}, NULL};
-    Node d = {{5, 7}, NULL};
-    Node e = {{8, 8}, NULL};
-    Node f = {{8, 9}, NULL};
-
     Node* start = &a;
-    Node* end = &f;  // end pointer
+    Node* end = start;
+    printList(start);
 
-    a.next = &b;
-    b.next = &c;
-    c.next = &d;
-    d.next = &e;
-    e.next = &f;
-
-    f.next = 0;
+    Node b = {{1, 2}, NULL};
+    pushBack(&end, &b);
+    Node c = {{2, 3}, NULL};
+    pushBack(&end, &c);
+    Node d = {{5, 7}, NULL};
+    pushBack(&end, &d);
+    Node e = {{8, 8}, NULL};
+    pushBack(&end, &e);
+    Node f = {{8, 9}, NULL};
+    pushBack(&end, &f);
 
     printList(start);
 
-    Node g = {{9, 9}, NULL};
-    pushBack(&end, &g);
-
+    // insert beginning
+    Node beginning = {{0, 0}, NULL};
+    insertNode(&start, &end, &beginning, 0);
     printList(start);
-    printNode(end);
+
+    // insert middle
+    Node middle = {{4, 4}, NULL};
+    insertNode(&start, &end, &middle, 4);
+    printList(start);
+
+    // insert end
+    Node last = {{10, 10}, NULL};
+    insertNode(&start, &end, &last, 8);
+    printList(start);
+
+    Node last2 = {{11, 11}, NULL};
+    pushBack(&end, &last2);
+    printList(start);
+
+    Node* retrieved = getNode(start, 9);
+    if (retrieved != 0) {
+        printNode(retrieved);
+    }
 
     return 0;
 }
