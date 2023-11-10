@@ -23,9 +23,7 @@ int* initializeArray(int* data, int count) {
 }
 
 int pushBack(int** array, int* size, int* count, int value) {
-    printf("pushback %i\n", value);
     if (*count >= *size) {
-        printf("doubling size\n");
         int* temp = realloc(*array, sizeof(int) * (*size) * 2);
         if (temp == NULL) {
             return 1;
@@ -47,22 +45,27 @@ void printArrayDetails(int* array, int size, int count) {
 }
 
 int main() {
-    int count = 5;
-    int size = count;
+    int count = 0;
+    int size = 5;
+    int* array = generateArray(size);
 
-    int data[] = {5, 10, 15, 20, 25};
+    int grade;
+    double total = 0;
+    while (1) {
+        printf("Enter a grade (-1 to quit): ");
 
-    int* array = initializeArray(data, count);
-
-    if (array == NULL) {
-        printf("Memory allocation failed.\n");
-        return 0;
+        scanf("%i", &grade);
+        if (grade == -1) {
+            break;
+        }
+        total += grade;
+        if (pushBack(&array, &size, &count, grade) != 0) {
+            printf("Out of memory");
+            break;
+        }
+        printArrayDetails(array, size, count);
     }
-
-    printArrayDetails(array, size, count);
-
-    pushBack(&array, &size, &count, 30);
-    printArrayDetails(array, size, count);
+    printf("Average grade: %f\n", total / count);
 
     free(array);
     return 0;
