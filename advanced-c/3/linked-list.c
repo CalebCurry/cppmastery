@@ -162,6 +162,6 @@ int main() {
     Position* search = searchList(linkedList, 300, 300);
     search->x = 301;
     printList(linkedList);
-    free(linkedList);
+    freeList(linkedList);
     return 0;
 }
