@@ -2,6 +2,8 @@
 
 #include "linked-list.h"
 
+// compile and run
+// gcc -o main main.c linked-list.c && ./main
 int main() {
     LinkedList* linkedList = generateLinkedList();
     printList(linkedList);
