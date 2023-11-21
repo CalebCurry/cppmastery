@@ -7,7 +7,7 @@
 int main() {
     LinkedList* linkedList = generateLinkedList();
     printList(linkedList);
-    pushFront(linkedList, 0, 1);
+    pushFront(linkedList, 0, -1);
     pushBack(linkedList, 1, 2);
     pushBack(linkedList, 2, 3);
     pushFront(linkedList, 5, 7);

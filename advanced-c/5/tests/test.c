@@ -17,10 +17,10 @@ Test(linkedlist, generate) {
 }
 
 Test(linkedlist, pushBack) {
-    pushBack(list, 5, 10);
+    pushBack(list, 6, 10);
     pushBack(list, 15, 20);
 
-    cr_assert(list->start->data.x == 5);
+    cr_assert(list->start->data.x == 6);
     cr_assert(list->start->data.y == 10);
     cr_assert(get(list, 1).x == 15 && get(list, 1).y == 20,
               "Data should be (15, 20)");
