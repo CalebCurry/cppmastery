@@ -1,6 +1,7 @@
 *
 !*/
 !*.c
+!*.cpp
 !*.h
 temp*
 !.gitignore
