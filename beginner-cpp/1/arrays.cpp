@@ -17,10 +17,26 @@ void printBoard(char* board, int cols, int rows) {
     }
 }
 
+template <typename T, size_t rows, size_t cols>
+void printArray(T(data)[rows][cols]) {
+    for (size_t row = 0; row < rows; row++) {
+        for (size_t col = 0; col < cols; col++) {
+            std::cout << data[row][col] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
 int main() {
-    char board[][4] = {
-        {'-', '-', '-', '-'},
-        {'-', '-', '-', '-'},
+    char board[][3] = {
+        {'-', '-', '-'},
+        {'-', '-', '-'},
+        {'-', '-', '-'},
+    };
+    char board2[][4] = {
+        {'-', '-', '-'},
+        {'-', '-', '-'},
+        {'-', '-', '-'},
     };
 
     int rows = sizeof board / sizeof board[0];
@@ -32,9 +48,10 @@ int main() {
     board[0][1] = 'o';
     board[1][0] = 'x';
     board[0][2] = 'o';
-    // board[2][0] = 'x';
+    board[2][0] = 'x';
 
-    printBoard(*board, 4, 2);
+    printArray<char, 3, 3>(board);
+    printArray<char, 3, 4>(board2);
 
     return 0;
 }
