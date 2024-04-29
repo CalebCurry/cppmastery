@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <vector>
 
@@ -19,5 +20,12 @@ void printData(const T data) {
 
 int main() {
     std::vector<int> data = {1, 2, 3, 4, 5};
+    std::vector<int> dest(data.size());
+
+    std::for_each(data.begin(), data.end(), [](auto& d) { d *= 2; });
+    std::transform(data.begin(), data.end(), dest.begin(),
+                   [](auto d) { return d * 2; });
+
     printData(data);
+    printData(dest);
 }
