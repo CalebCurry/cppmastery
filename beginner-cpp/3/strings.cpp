@@ -1,4 +1,6 @@
+#include <format>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 int main() {
@@ -21,4 +23,26 @@ int main() {
         std::cout << message << std::endl;
         auto c = message.c_str();  // if needed
     }
+
+    std::string name = "Caleb";
+    std::string last = "Curry";
+
+    std::string full = name + " " + last;
+    // name.append(" ").append(last);
+
+    std::cout << full << std::endl;
+
+    int hour = 6;
+    int min = 20;
+    int sec = 37;
+    int micro = 343434;
+
+    std::string result =
+        std::format("time is {}:{}:{}.{}", hour, min, sec, micro);
+    std::cout << result << std::endl;
+
+    std::ostringstream stream;
+    stream << "time is " << hour << ":" << min << ":" << sec << "." << micro;
+    std::string result2 = stream.str();
+    std::cout << result2 << std::endl;
 }
