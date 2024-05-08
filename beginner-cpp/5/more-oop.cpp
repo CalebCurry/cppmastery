@@ -5,8 +5,13 @@ class Person {
     Person(const std::string& firstName, const std::string& lastName)
         : firstName(firstName), lastName(lastName) {}
 
-    void setFirstName(const std::string& firstName) {
+    // void setFirstName(const std::string& firstName) {
+    //     this->firstName = firstName;
+    // }
+
+    Person& setFirstName(const std::string& firstName) {
         this->firstName = firstName;
+        return *this;
     }
 
     void setLastName(const std::string& lastName) { this->lastName = lastName; }
@@ -17,6 +22,8 @@ class Person {
         return (this->firstName == other.firstName &&
                 this->lastName == other.lastName);
     }
+
+    void print() { std::cout << *this << std::endl; }
 
     friend std::ostream& operator<<(std::ostream& os, Person& p);
 
@@ -37,7 +44,10 @@ int main() {
     Person p1("Caleb", "Curry");
     Person p2 = p1;
 
-    std::cout << "hello " << p1 << std::endl;
+    p1.setFirstName("John").setLastName("Smith");
+
+    std::cout << p1 << std::endl;
+    p1.print();
 
     if (p1 == p2) {
         // std::cout << "they are equal" << std::endl;  // same person
