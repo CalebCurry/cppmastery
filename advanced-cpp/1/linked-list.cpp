@@ -11,36 +11,50 @@ class Node {
 };
 
 class LinkedList {
+    int _size = 0;
+
    public:
+    Node* start = nullptr;
+    Node* end = nullptr;
+
+    int size() { return _size; }  // only getter
     ~LinkedList() {
         // iterate through the nodes
         // free each one
         Node* current = start;
         while (current != nullptr) {
             Node* temp = current->next;
-            std::cout << "deleting " << current->data << std::endl;
             delete current;
             current = temp;
         }
     }
-
-    Node* start = nullptr;
 
     void push(int data) {
         Node* node = new Node(data);
         if (start == nullptr) {
             // assign to start
             start = node;
+            end = node;
         } else {
-            // append to start's next
-            // or go to the end of the list
-            Node* current = start;
-            while (current->next != nullptr) {
-                current = current->next;
-            }
-            // we know current is the last node
-            current->next = node;
+            // setting the previous end's next to the new end
+            end->next = node;  // makes the chain
+            // update the end pointer
+            end = node;
         }
+        _size++;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const LinkedList& list) {
+        Node* current = list.start;
+        while (current != nullptr) {
+            if (current != list.end) {
+                os << current->data << " -> ";
+            } else {
+                os << current->data;
+            }
+            current = current->next;
+        }
+        return os;
     }
 };
 
@@ -51,7 +65,5 @@ int main() {
     list.push(10);
     list.push(15);
 
-    std::cout << list.start->data << std::endl;              // 5
-    std::cout << list.start->next->data << std::endl;        // 10
-    std::cout << list.start->next->next->data << std::endl;  // 15
+    std::cout << list << std::endl;
 }
