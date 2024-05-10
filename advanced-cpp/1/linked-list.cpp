@@ -3,7 +3,7 @@
 class Node {
    public:
     int data;
-    Node* next;
+    Node* next = nullptr;
 
     Node(int data) : data(data) {}
 
@@ -12,21 +12,46 @@ class Node {
 
 class LinkedList {
    public:
-    Node* start;
+    ~LinkedList() {
+        // iterate through the nodes
+        // free each one
+        Node* current = start;
+        while (current != nullptr) {
+            Node* temp = current->next;
+            std::cout << "deleting " << current->data << std::endl;
+            delete current;
+            current = temp;
+        }
+    }
+
+    Node* start = nullptr;
+
+    void push(int data) {
+        Node* node = new Node(data);
+        if (start == nullptr) {
+            // assign to start
+            start = node;
+        } else {
+            // append to start's next
+            // or go to the end of the list
+            Node* current = start;
+            while (current->next != nullptr) {
+                current = current->next;
+            }
+            // we know current is the last node
+            current->next = node;
+        }
+    }
 };
 
 int main() {
-    Node a(5);
-    Node b(10);
-    Node c(15);
-
     LinkedList list;
-    list.start = &a;
 
-    a.next = &b;
-    b.next = &c;
+    list.push(5);
+    list.push(10);
+    list.push(15);
 
-    std::cout << list.start->data << std::endl;              // a
-    std::cout << list.start->next->data << std::endl;        // b
-    std::cout << list.start->next->next->data << std::endl;  // c
+    std::cout << list.start->data << std::endl;              // 5
+    std::cout << list.start->next->data << std::endl;        // 10
+    std::cout << list.start->next->next->data << std::endl;  // 15
 }
