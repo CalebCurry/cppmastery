@@ -44,6 +44,34 @@ class LinkedList {
         _size++;
     }
 
+    int pop() {
+        if (_size == 0) {
+            throw std::runtime_error("List is empty");
+        }
+        if (_size == 1) {
+            auto result = start->data;
+            delete start;
+            start = nullptr;
+            end = nullptr;
+            _size--;
+            return result;
+        }
+        // get the 2nd to last node
+        Node* current = start;
+        while (current->next != end) {
+            // move to the next node
+            current = current->next;
+        }
+        // at 2nd to last node
+        auto result = current->next->data;
+        delete current->next;
+        current->next = nullptr;
+        end = current;
+
+        _size--;
+        return result;
+    }
+
     friend std::ostream& operator<<(std::ostream& os, const LinkedList& list) {
         Node* current = list.start;
         while (current != nullptr) {
@@ -66,4 +94,25 @@ int main() {
     list.push(15);
 
     std::cout << list << std::endl;
+
+    std::cout << list.pop() << std::endl;
+
+    list.pop();
+    list.push(20);
+
+    std::cout << list << std::endl;
+
+    list.pop();
+
+    std::cout << list << std::endl;
+
+    list.pop();
+    std::cout << list << std::endl;
+
+    try {
+        list.pop();
+
+    } catch (std::runtime_error& e) {
+        std::cerr << "Error occured: " << e.what() << std::endl;
+    }
 }
