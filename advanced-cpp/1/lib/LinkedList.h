@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+namespace CGL {
 template <typename T>
 class Node {
    public:
@@ -91,5 +92,5 @@ class LinkedList {
         return os;
     }
 };
-
+}  // namespace CGL
 #endif
