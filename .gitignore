@@ -6,3 +6,4 @@
 temp*
 !.gitignore
 !*.txt
+!*.sh
