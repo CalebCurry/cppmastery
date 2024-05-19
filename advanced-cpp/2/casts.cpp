@@ -15,6 +15,7 @@ class Point {
         os << "(" << x << ", " << y << ")";
     }
 
+    // uses virtual print so only needed in base class
     friend std::ostream& operator<<(std::ostream& os, const Point& p) {
         p.print(os);
         return os;
