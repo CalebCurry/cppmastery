@@ -11,3 +11,4 @@ temp*
 !*.sql
 build
 libpqxx
+!docker-compose.yml

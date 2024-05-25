@@ -1,0 +1,14 @@
+services:
+  db: 
+    image: postgres:latest
+    container_name: customers
+    environment: 
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - customers_data:/var/lib/postgresql/data 
+      - ./src:/docker-entrypoint-initdb.d
+    ports:
+      - 5430:5432
+
+volumes:
+  customers_data:
