@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.21)
+project(customers)
+set(CMAKE_CXX_STANDARD 20)
+add_executable(customers src/main.cpp)
+add_subdirectory(deps/libpqxx)
+target_link_libraries(customers PRIVATE pqxx)

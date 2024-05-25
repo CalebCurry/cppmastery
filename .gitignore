@@ -8,3 +8,6 @@ temp*
 !*.txt
 !*.sh
 !Dockerfile
+!*.sql
+build
+libpqxx
