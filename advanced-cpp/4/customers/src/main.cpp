@@ -11,41 +11,41 @@ class Customer {
 
     Customer(std::optional<int> id, std::string name, std::string email)
         : id(id), name(name), email(email) {}
+
+    static auto getCustomers(pqxx::connection& c) {
+        pqxx::nontransaction db{c};
+        std::vector<Customer> customers;
+
+        for (auto [id, name, email] : db.query<int, std::string, std::string>(
+                 "SELECT id, name, email FROM customers")) {
+            customers.push_back(Customer{id, name, email});
+        }
+
+        return customers;
+    }
+
+    static void insertCustomer(pqxx::connection& c, Customer& customer) {
+        pqxx::nontransaction db{c};
+        std::string query =
+            "INSERT INTO customers (name, email) VALUES ($1, $2) RETURNING id";
+        auto row = db.exec_params1(query, customer.name, customer.email);
+        customer.id = row[0].as<int>();
+    }
+
+    static void printCustomers(std::vector<Customer> customers) {
+        for (auto customer : customers) {
+            std::cout << *customer.id << " ";
+            std::cout << customer.name << " ";
+            std::cout << customer.email << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
+    static void deleteCustomer(pqxx::connection& c, int id) {
+        pqxx::nontransaction db{c};
+        db.exec_params("DELETE FROM customers WHERE id=$1", id);
+    }
 };
-
-auto getCustomers(pqxx::connection& c) {
-    pqxx::nontransaction db{c};
-    std::vector<Customer> customers;
-
-    for (auto [id, name, email] : db.query<int, std::string, std::string>(
-             "SELECT id, name, email FROM customers")) {
-        customers.push_back(Customer{id, name, email});
-    }
-
-    return customers;
-}
-
-void insertCustomer(pqxx::connection& c, Customer& customer) {
-    pqxx::nontransaction db{c};
-    std::string query =
-        "INSERT INTO customers (name, email) VALUES ($1, $2) RETURNING id";
-    auto row = db.exec_params1(query, customer.name, customer.email);
-    customer.id = row[0].as<int>();
-}
-
-void printCustomers(std::vector<Customer> customers) {
-    for (auto customer : customers) {
-        std::cout << *customer.id << " ";
-        std::cout << customer.name << " ";
-        std::cout << customer.email << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void deleteCustomer(pqxx::connection& c, int id) {
-    pqxx::nontransaction db{c};
-    db.exec_params("DELETE FROM customers WHERE id=$1", id);
-}
 
 void printMenu(pqxx::connection& c) {
     while (true) {
@@ -72,21 +72,21 @@ void printMenu(pqxx::connection& c) {
 
                 Customer customer{{}, name, email};
 
-                insertCustomer(c, customer);
+                Customer::insertCustomer(c, customer);
 
                 break;
             }
             case 2: {
                 std::cout << "\n Your customer list: \n" << std::endl;
-                auto customers = getCustomers(c);
-                printCustomers(customers);
+                auto customers = Customer::getCustomers(c);
+                Customer::printCustomers(customers);
                 break;
             }
             case 3: {
                 std::cout << "Give us an ID to delete: ";
                 int id;
                 std::cin >> id;
-                deleteCustomer(c, id);
+                Customer::deleteCustomer(c, id);
                 std::cout << "Deleted customer with id " << id << std::endl;
                 break;
             }
