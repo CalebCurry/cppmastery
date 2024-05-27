@@ -13,10 +13,11 @@ class Customer {
         : id(id), name(name), email(email) {}
 };
 
-auto getCustomers(pqxx::work& tx) {
+auto getCustomers(pqxx::connection& c) {
+    pqxx::nontransaction db{c};
     std::vector<Customer> customers;
 
-    for (auto [id, name, email] : tx.query<int, std::string, std::string>(
+    for (auto [id, name, email] : db.query<int, std::string, std::string>(
              "SELECT id, name, email FROM customers")) {
         customers.push_back(Customer{id, name, email});
     }
@@ -24,10 +25,11 @@ auto getCustomers(pqxx::work& tx) {
     return customers;
 }
 
-void insertCustomer(pqxx::work& tx, Customer& customer) {
+void insertCustomer(pqxx::connection& c, Customer& customer) {
+    pqxx::nontransaction db{c};
     std::string query =
         "INSERT INTO customers (name, email) VALUES ($1, $2) RETURNING id";
-    auto row = tx.exec_params1(query, customer.name, customer.email);
+    auto row = db.exec_params1(query, customer.name, customer.email);
     customer.id = row[0].as<int>();
 }
 
@@ -40,8 +42,62 @@ void printCustomers(std::vector<Customer> customers) {
     std::cout << std::endl;
 }
 
-void deleteCustomer(pqxx::work& tx, int id) {
-    tx.exec_params("DELETE FROM customers WHERE id=$1", id);
+void deleteCustomer(pqxx::connection& c, int id) {
+    pqxx::nontransaction db{c};
+    db.exec_params("DELETE FROM customers WHERE id=$1", id);
+}
+
+void printMenu(pqxx::connection& c) {
+    while (true) {
+        std::cout << std::endl;
+        std::cout << "1. Add a customer" << std::endl;
+        std::cout << "2. List customers" << std::endl;
+        std::cout << "3. Delete a customer" << std::endl;
+        std::cout << "4. Exit" << std::endl;
+
+        int input;
+        std::cin >> input;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        switch (input) {
+            case 1: {
+                std::string name;
+                std::string email;
+
+                std::cout << "Provide a name:" << std::endl;
+                std::getline(std::cin, name);
+
+                std::cout << "Provide an email:" << std::endl;
+                std::getline(std::cin, email);
+
+                Customer customer{{}, name, email};
+
+                insertCustomer(c, customer);
+
+                break;
+            }
+            case 2: {
+                std::cout << "\n Your customer list: \n" << std::endl;
+                auto customers = getCustomers(c);
+                printCustomers(customers);
+                break;
+            }
+            case 3: {
+                std::cout << "Give us an ID to delete: ";
+                int id;
+                std::cin >> id;
+                deleteCustomer(c, id);
+                std::cout << "Deleted customer with id " << id << std::endl;
+                break;
+            }
+            case 4:
+                std::cout << "Changes saved!" << std::endl;
+                return;
+            default:
+                std::cout << "Try a valid" << std::endl;
+                break;
+        }
+    }
 }
 
 int main() {
@@ -52,26 +108,7 @@ int main() {
 
         std::cout << "Connected to: " << c.dbname() << std::endl;
 
-        pqxx::work tx{c};
-
-        std::string name;
-        std::string email;
-
-        std::cout << "Provide a name and email:" << std::endl;
-        std::cin >> name;
-        std::cin >> email;
-
-        Customer customer{{}, name, email};
-
-        insertCustomer(tx, customer);
-
-        std::cout << *customer.id << std::endl;
-
-        auto customers = getCustomers(tx);
-
-        printCustomers(customers);
-
-        tx.commit();
+        printMenu(c);
 
     } catch (const std::exception& e) {
         std::cout << "ERROR: " << e.what() << std::endl;
