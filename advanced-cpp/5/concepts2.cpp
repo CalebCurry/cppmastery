@@ -3,6 +3,11 @@
 #include <type_traits>
 
 template <typename T>
+concept Clearable = requires(T x) {
+    { x.clear() } -> std::same_as<void>;
+};
+
+template <typename T>
 concept FileHandler = requires(T x, const std::string& data) {
     { x.read() } -> std::same_as<std::string>;
     { x.write(data) } -> std::same_as<void>;
@@ -14,13 +19,15 @@ class TextFile {
     TextFile(std::string content) : content(content) {}
     std::string read() { return content; }
     void write(std::string content) { this->content = content; }
+    void clear() { content = ""; }
 };
 
-template <FileHandler F>
+template <typename F>
+    requires requires(F x) {
+        { x.clear() } -> std::same_as<void>;
+    }
 void processFile(F& file) {
-    std::cout << "Current file content: " << file.read() << std::endl;
-    file.write("Updated content");
-    std::cout << "File has been updated" << std::endl;
+    file.clear();
 }
 
 int main() {
